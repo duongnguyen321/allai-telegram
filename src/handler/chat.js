@@ -1,33 +1,24 @@
-const server = require("./server");
-const { bot, openai } = require("../instance/instance");
-const chat = async (msg, chatId) => {
-  const message = msg.replace(/<[^>]*>?/gm, "");
-  if (message.length < 2) {
-    await bot.sendMessage(chatId, "Please enter a prompt");
-    return;
-  }
-  const messageHistory = await server.getChatHistory();
-  const chatData = await openai.createChatCompletion({
-    model: "gpt-3.5-turbo",
-    messages: [...messageHistory, { role: "user", content: message }],
-  });
-  const result = chatData.data.choices[0]?.message?.content;
+const e = require("./server"),
+  { bot: t, openai: a } = require("../instance/instance");
+module.exports = async (s, o) => {
+  const n = s.replace(/<[^>]*>?/gm, "");
+  if (n.length < 2)
+    return void (await t.sendMessage(o, "Please enter a prompt"));
+  const r = await e.getChatHistory(),
+    i = await a.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [...r, { role: "user", content: n }],
+    }),
+    c = i.data.choices[0]?.message?.content;
   try {
-    const regex = /<img[^>]+src="?([^"\s]+)"?\s*\/>/g;
-    const match = regex.exec(result);
-    if (match) {
-      await bot.sendPhoto(chatId, match[1]);
-    } else {
-      await bot.sendMessage(chatId, result.replace(/<[^>]*>?/gm, ""), {
-        parse_mode: "Markdown",
-      });
-    }
-  } catch (error) {
-    console.error("Unable to send message: ", error);
+    const e = /<img[^>]+src="?([^"\s]+)"?\s*\/>/g.exec(c);
+    e
+      ? await t.sendPhoto(o, e[1])
+      : await t.sendMessage(o, c.replace(/<[^>]*>?/gm, ""), {
+          parse_mode: "Markdown",
+        });
+  } catch (e) {
+    console.error("Unable to send message: ", e);
   }
-  await server.uploadChatHistory({
-    user: message,
-    bot: result,
-  });
+  await e.uploadChatHistory({ user: n, bot: c });
 };
-module.exports = chat;

@@ -2,10 +2,10 @@
   "name": "telegram-bot-messimg",
   "version": "1.0.0",
   "description": "Telegram bot for machine learning",
-  "main": "api/app.min.js",
+  "main": "api/app.js",
   "scripts": {
     "build": "npm i",
-    "start": "node api/app.min.js",
+    "start": "node api/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
