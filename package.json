@@ -1,0 +1,24 @@
+{
+  "name": "telegram-bot-messimg",
+  "version": "1.0.0",
+  "description": "Telegram bot for machine learning",
+  "main": "api/app.min.js",
+  "scripts": {
+    "build": "npm i",
+    "start": "node api/app.min.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Telegram",
+    "Node.js",
+    "Javascript"
+  ],
+  "author": "Nguyen Duong",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.3.4",
+    "dotenv": "^8.0.0",
+    "node-telegram-bot-api": "^0.30.0",
+    "openai": "^3.2.1"
+  }
+}
