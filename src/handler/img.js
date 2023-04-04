@@ -1,1 +1,17 @@
-const{bot:e,openai:a}=require("../instance/instance"),{uploadChatHistory:t}=require("./server");module.exports=async(r,s)=>{const o=r.replace(/<[^>]*>?/gm,"");if(o.length<3)return void await e.sendMessage(s,"Please enter a prompt");const n=(await a.createImage({prompt:o,response_format:"url",size:"1024x1024"})).data.data[0].url;await t({user:o,bot:n}),await e.sendPhoto(s,n)};
+const { bot: telegramBot, openai } = require("../instance/instance");
+const { uploadChatHistory } = require("./server");
+module.exports = async (userInput, chatId) => {
+  const cleanedInput = userInput.replace(/<[^>]*>?/gm, "");
+  if (cleanedInput.length < 3) {
+    await telegramBot.sendMessage(chatId, "Please enter a prompt");
+    return;
+  }
+  const { data } = await openai.createImage({
+    prompt: cleanedInput,
+    response_format: "url",
+    size: "1024x1024",
+  });
+  const imageUrl = data.data[0].url;
+  await uploadChatHistory({ user: cleanedInput, bot: imageUrl });
+  await telegramBot.sendPhoto(chatId, imageUrl);
+};

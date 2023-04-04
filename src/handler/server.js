@@ -1,1 +1,28 @@
-const t=require("axios");require("dotenv").config();const r=process.env.API_URL,a={async getChatHistory(){try{const a=await t.get(`${r}/chat-tranning`);return[...(await t.get(`${r}/chat-history`)).data,...a.data].flatMap((t=>[{role:"user",content:t.user},{role:"assistant",content:t.bot}]))}catch(t){return console.error("Unable to get chat history: ",t),[]}},async uploadChatHistory(a){try{return await t.post(`${r}/chat-history`,a),!0}catch(t){return console.error("Unable to upload chat history: ",t),!1}}};module.exports=a;
+const axios = require("axios");
+require("dotenv").config();
+const API_URL = process.env.API_URL;
+const chatService = {
+  async getChatHistory() {
+    try {
+      const trainingData = await axios.get(`${API_URL}/chat-training`);
+      const chatData = await axios.get(`${API_URL}/chat-history`);
+      return [...chatData.data, ...trainingData.data].flatMap((data) => [
+        { role: "user", content: data.user },
+        { role: "assistant", content: data.bot },
+      ]);
+    } catch (error) {
+      console.error("Unable to get chat history: ", error);
+      return [];
+    }
+  },
+  async uploadChatHistory(data) {
+    try {
+      await axios.post(`${API_URL}/chat-history`, data);
+      return true;
+    } catch (error) {
+      console.error("Unable to upload chat history: ", error);
+      return false;
+    }
+  },
+};
+module.exports = chatService;

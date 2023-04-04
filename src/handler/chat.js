@@ -1,1 +1,32 @@
-const e=require("./server"),{bot:t,openai:a}=require("../instance/instance");module.exports=async(s,o)=>{const r=s.replace(/<[^>]*>?/gm,"");if(r.length<2)return void await t.sendMessage(o,"Please enter a prompt");const n=await e.getChatHistory(),c=await a.createChatCompletion({model:"gpt-3.5-turbo",messages:[...n,{role:"user",content:r}]}),i=c.data.choices[0]?.message?.content;try{const e=/<img[^>]+src="?([^"\s]+)"?\s*\/>/g.exec(i);e?await t.sendPhoto(o,e[1]):await t.sendMessage(o,i.replace(/<[^>]*>?/gm,""),{parse_mode:"Markdown"})}catch(e){console.error("Unable to send message: ",e)}await e.uploadChatHistory({user:r,bot:i})};
+const server = require("./server"),
+  { bot: telegramBot, openai: openAI } = require("../instance/instance");
+module.exports = async (userInput, chatId) => {
+  const cleanedInput = userInput.replace(/<[^>]*>?/gm, "");
+  if (cleanedInput.length < 2) {
+    return void (await telegramBot.sendMessage(
+      chatId,
+      "Please enter a prompt"
+    ));
+  }
+  const chatHistory = await server.getChatHistory();
+  const completionResult = await openAI.createChatCompletion({
+    model: "gpt-3.5-turbo",
+    messages: [...chatHistory, { role: "user", content: cleanedInput }],
+  });
+  const generatedOutput = completionResult.data.choices[0]?.message?.content;
+  try {
+    const imgRegex = /<img[^>]+src="?([^"\s]+)"?\s*\/>/g.exec(generatedOutput);
+    if (imgRegex) {
+      await telegramBot.sendPhoto(chatId, imgRegex[1]);
+    } else {
+      await telegramBot.sendMessage(
+        chatId,
+        generatedOutput.replace(/<[^>]*>?/gm, ""),
+        { parse_mode: "Markdown" }
+      );
+    }
+  } catch (error) {
+    console.error("Unable to send message: ", error);
+  }
+  await server.uploadChatHistory({ user: cleanedInput, bot: generatedOutput });
+};
