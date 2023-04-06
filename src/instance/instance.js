@@ -6,7 +6,7 @@ const bot = new TelegramBot(process.env.TOKEN, {
   polling: true,
 });
 // Initialize OpenAI API with API key
-const openaiApi = new OpenAIApi(
+const openai = new OpenAIApi(
   new Configuration({ apiKey: process.env.OPENAI_API_KEY })
 );
-module.exports = { bot, openaiApi };
+module.exports = { bot, openai };

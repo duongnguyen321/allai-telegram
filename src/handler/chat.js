@@ -1,5 +1,5 @@
 const server = require("./server"),
-  { bot: telegramBot, openai: openAI } = require("../instance/instance");
+  { bot: telegramBot,openai } = require("../instance/instance");
 module.exports = async (userInput, chatId) => {
   const cleanedInput = userInput.replace(/<[^>]*>?/gm, "");
   if (cleanedInput.length < 2) {
@@ -9,7 +9,7 @@ module.exports = async (userInput, chatId) => {
     ));
   }
   const chatHistory = await server.getChatHistory();
-  const completionResult = await openAI.createChatCompletion({
+  const completionResult = await openai.createChatCompletion({
     model: "gpt-3.5-turbo",
     messages: [...chatHistory, { role: "user", content: cleanedInput }],
   });

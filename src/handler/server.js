@@ -1,7 +1,7 @@
 const axios = require("axios");
 require("dotenv").config();
 const API_URL = process.env.API_URL;
-const chatService = {
+const server = {
   async getChatHistory() {
     try {
       const data = await axios.get(`${API_URL}/all`);
@@ -24,4 +24,4 @@ const chatService = {
     }
   },
 };
-module.exports = chatService;
+module.exports = server;
