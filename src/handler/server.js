@@ -4,9 +4,8 @@ const API_URL = process.env.API_URL;
 const chatService = {
   async getChatHistory() {
     try {
-      const trainingData = await axios.get(`${API_URL}/chat-training`);
-      const chatData = await axios.get(`${API_URL}/chat-history`);
-      return [...chatData.data, ...trainingData.data].flatMap((data) => [
+      const data = await axios.get(`${API_URL}/all`);
+      return data.data.flatMap((data) => [
         { role: "user", content: data.user },
         { role: "assistant", content: data.bot },
       ]);
